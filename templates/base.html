@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = { darkMode: "class" };
+</script>
+
+<title>AI Expense Tracker</title>
+
+</head>
+
+<body class="bg-white dark:bg-slate-900 dark:text-white min-h-screen">
+
+<header class="p-4 flex justify-between items-center border-b bg-slate-100 dark:bg-slate-800">
+
+<h1 class="font-bold text-xl">
+AI Expense Tracker
+</h1>
+
+<div class="flex gap-3">
+
+<button id="toggle"
+class="bg-slate-700 text-white px-3 py-1 rounded">
+Theme
+</button>
+
+{% if session.get("user_id") %}
+<a href="/logout"
+class="bg-red-600 text-white px-3 py-1 rounded">
+Logout
+</a>
+{% endif %}
+
+</div>
+
+</header>
+
+<main class="p-6 max-w-5xl mx-auto">
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for m in messages %}
+
+<div class="mb-3 bg-blue-600 text-white p-2 rounded">
+{{ m }}
+</div>
+
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+</main>
+
+<script>
+
+const root = document.documentElement;
+
+if (localStorage.theme === "dark")
+root.classList.add("dark");
+
+document.getElementById("toggle").onclick = () => {
+
+root.classList.toggle("dark");
+
+localStorage.theme =
+root.classList.contains("dark")
+? "dark"
+: "light";
+
+};
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="text-xl mb-4">Login</h2>
+
+<form method="post" class="grid gap-3 max-w-md">
+
+<input name="username"
+placeholder="Username"
+required
+class="bg-slate-800 text-white p-2 rounded">
+
+<input name="password"
+type="password"
+placeholder="Password"
+required
+class="bg-slate-800 text-white p-2 rounded">
+
+<button
+class="bg-blue-600 p-2 rounded text-white">
+Login
+</button>
+
+</form>
+
+<br>
+
+<a href="/register"
+class="text-blue-400">
+Create account
+</a>
+
+{% endblock %}
