@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="mb-6">
+
+    <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
+
+    <div class="bg-slate-800 text-white p-4 rounded mb-4">
+
+        <div class="mb-2">
+            <strong>Monthly Spending:</strong>
+            ₹{{ "%.2f"|format(month_total) }}
+        </div>
+
+        <div class="mb-2">
+            <strong>Budget:</strong>
+            ₹{{ "%.2f"|format(budget) }}
+        </div>
+
+        {% if budget_exceeded %}
+        <div class="bg-red-600 text-white p-2 rounded mb-2">
+            ⚠ Budget Exceeded!
+        </div>
+        {% endif %}
+
+        <form method="post" action="/update_budget" class="flex gap-2 mt-2">
+            <input type="number" step="0.01" name="budget"
+                   value="{{ budget }}"
+                   class="bg-slate-700 text-white p-2 rounded w-40">
+            <button class="bg-blue-600 px-3 py-2 rounded">
+                Update Budget
+            </button>
+        </form>
+
+    </div>
+
+    <div class="bg-slate-800 text-white p-4 rounded mb-4">
+
+        <h3 class="font-bold mb-2">Financial Intelligence</h3>
+
+        {% if insight %}
+        <div class="bg-yellow-600 p-2 rounded mb-2">
+            {{ insight }}
+        </div>
+        {% endif %}
+
+        <div class="mb-2">
+            <strong>Predicted Monthly Spending:</strong>
+            ₹{{ "%.2f"|format(predicted_month) }}
+        </div>
+
+        <div>
+            <strong>Financial Score:</strong>
+            {{ financial_score }}/100 — {{ score_label }}
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ADD EXPENSE FORM -->
+
+<div class="bg-slate-800 text-white p-4 rounded mb-6">
+
+    <h3 class="font-bold mb-3">Add Expense</h3>
+
+    <form method="post" action="/add" class="grid md:grid-cols-4 gap-3">
+
+        <input name="description"
+               required
+               placeholder="Description"
+               class="bg-slate-700 p-2 rounded">
+
+        <input name="amount"
+               type="number"
+               step="0.01"
+               required
+               placeholder="Amount (₹)"
+               class="bg-slate-700 p-2 rounded">
+
+        <select name="category"
+                required
+                class="bg-slate-700 p-2 rounded">
+
+            {% for c in categories %}
+            <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
+
+        </select>
+
+        <input name="date"
+               type="date"
+               value="{{ today }}"
+               required
+               class="bg-slate-700 p-2 rounded">
+
+        <button class="bg-green-600 col-span-full p-2 rounded">
+            Add Expense
+        </button>
+
+    </form>
+
+</div>
+
+<!-- EXPENSE TABLE -->
+
+<div class="bg-slate-800 text-white p-4 rounded mb-6">
+
+    <h3 class="font-bold mb-3">Expense History</h3>
+
+    <table class="w-full">
+
+        <thead class="bg-slate-700">
+            <tr>
+                <th class="p-2">Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for e in expenses %}
+            <tr class="border-t border-slate-700">
+                <td class="p-2">{{ e.date }}</td>
+                <td>{{ e.description }}</td>
+                <td>{{ e.category }}</td>
+                <td>₹{{ "%.2f"|format(e.amount) }}</td>
+                <td>
+                    <a href="/edit/{{ e.id }}"
+                       class="bg-yellow-600 px-2 rounded">Edit</a>
+
+                    <form method="post"
+                          action="/delete/{{ e.id }}"
+                          class="inline"
+                          onsubmit="return confirm('Delete this expense?');">
+
+                        <button class="bg-red-600 px-2 rounded">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <div class="font-bold mt-4">
+        Total Spending: ₹{{ "%.2f"|format(total) }}
+    </div>
+
+</div>
+
+<!-- ANALYTICS -->
+
+<div class="bg-slate-800 text-white p-4 rounded">
+
+    <h3 class="font-bold mb-4">Analytics</h3>
+
+    <div style="max-width:500px;margin:auto">
+        <canvas id="pie"></canvas>
+    </div>
+
+    <br>
+
+    <div style="max-width:700px;margin:auto">
+        <canvas id="daily"></canvas>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const pieLabels = JSON.parse('{{ pie_labels | tojson | safe }}');
+    const pieValues = JSON.parse('{{ pie_values | tojson | safe }}');
+
+    const dailyLabels = JSON.parse('{{ daily_labels | tojson | safe }}');
+    const dailyValues = JSON.parse('{{ daily_values | tojson | safe }}');
+
+    if (pieLabels.length > 0) {
+        new Chart(document.getElementById("pie"), {
+            type: "pie",
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    data: pieValues
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return "₹ " + context.parsed;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    if (dailyLabels.length > 0) {
+        new Chart(document.getElementById("daily"), {
+            type: "bar",
+            data: {
+                labels: dailyLabels,
+                datasets: [{
+                    data: dailyValues
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return "₹ " + context.parsed.y;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+});
+</script>
+
+{% endblock %}
