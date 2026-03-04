@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, session, flash
+from flask import Blueprint, render_template, request, redirect, session, flash, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date
 import calendar
@@ -68,10 +68,17 @@ def logout():
 
 @main.route("/")
 def index():
+
     if "user_id" not in session:
         return redirect("/login")
 
     user = User.query.get(session["user_id"])
+
+    # FIX FOR INTERNAL SERVER ERROR
+    if not user:
+        session.clear()
+        return redirect("/login")
+
     expenses = Expense.query.filter_by(user_id=user.id)\
         .order_by(Expense.date.desc()).all()
 
@@ -91,7 +98,10 @@ def index():
     budget_exceeded = month_total > budget
 
     days_in_month = calendar.monthrange(today.year, today.month)[1]
-    predicted_month = (month_total / today.day) * days_in_month if today.day else 0
+
+    predicted_month = 0
+    if today.day != 0:
+        predicted_month = (month_total / today.day) * days_in_month
 
     # Financial score
     if budget == 0:
@@ -100,17 +110,18 @@ def index():
         ratio = month_total / budget
         financial_score = max(0, int(100 - (ratio * 100)))
 
-    score_label = (
-        "Excellent" if financial_score >= 80
-        else "Good" if financial_score >= 60
-        else "Warning"
-    )
+    if financial_score >= 80:
+        score_label = "Excellent"
+    elif financial_score >= 60:
+        score_label = "Good"
+    else:
+        score_label = "Warning"
 
-    # Categories
     categories = ["Food", "Travel", "Bills", "Shopping", "Other"]
 
     # Pie chart data
     pie_data = {}
+
     for e in expenses:
         pie_data[e.category] = pie_data.get(e.category, 0) + e.amount
 
@@ -119,6 +130,7 @@ def index():
 
     # Daily chart data
     daily_data = {}
+
     for e in month_expenses:
         day = e.date.day
         daily_data[day] = daily_data.get(day, 0) + e.amount
@@ -127,6 +139,7 @@ def index():
     daily_values = list(daily_data.values())
 
     insight = None
+
     if budget_exceeded:
         insight = "⚠ You are overspending this month."
 
@@ -156,14 +169,22 @@ def index():
 
 @main.route("/update_budget", methods=["POST"])
 def update_budget():
+
     if "user_id" not in session:
         return redirect("/login")
 
     user = User.query.get(session["user_id"])
+
+    if not user:
+        session.clear()
+        return redirect("/login")
+
     user.monthly_budget = float(request.form["budget"])
+
     db.session.commit()
 
     flash("Budget updated")
+
     return redirect("/")
 
 
@@ -173,10 +194,12 @@ def update_budget():
 
 @main.route("/add", methods=["POST"])
 def add():
+
     if "user_id" not in session:
         return redirect("/login")
 
     create_expense(session["user_id"], request.form)
+
     return redirect("/")
 
 
@@ -186,6 +209,7 @@ def add():
 
 @main.route("/delete/<int:id>", methods=["POST"])
 def delete(id):
+
     if "user_id" not in session:
         return redirect("/login")
 
@@ -195,6 +219,7 @@ def delete(id):
         return redirect("/")
 
     delete_expense(expense)
+
     return redirect("/")
 
 
@@ -204,6 +229,7 @@ def delete(id):
 
 @main.route("/edit/<int:id>", methods=["GET", "POST"])
 def edit(id):
+
     if "user_id" not in session:
         return redirect("/login")
 
@@ -215,14 +241,21 @@ def edit(id):
     categories = ["Food", "Travel", "Bills", "Shopping", "Other"]
 
     if request.method == "POST":
+
         expense.description = request.form["description"]
         expense.amount = float(request.form["amount"])
         expense.category = request.form["category"]
+
         expense.date = datetime.strptime(
             request.form["date"], "%Y-%m-%d"
         ).date()
 
         db.session.commit()
+
         return redirect("/")
 
-    return render_template("edit.html", e=expense, categories=categories)
+    return render_template(
+        "edit.html",
+        e=expense,
+        categories=categories
+    )
