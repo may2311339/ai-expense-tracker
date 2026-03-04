@@ -1,12 +1,11 @@
-🚀 AI Expense Tracker
+# 🚀 AI Expense Tracker
 
-"Python" (https://img.shields.io/badge/Python-3.11-blue)
-"Flask" (https://img.shields.io/badge/Flask-Web%20Framework-black)
-"SQLAlchemy" (https://img.shields.io/badge/SQLAlchemy-ORM-red)
-"Render" (https://img.shields.io/badge/Deployment-Render-purple)
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![Flask](https://img.shields.io/badge/Flask-Web%20Framework-black)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-red)
+![Render](https://img.shields.io/badge/Deployment-Render-purple)
 
-Live Demo:
-https://ai-expense-tracker-whdx.onrender.com
+Live Demo: https://ai-expense-tracker-whdx.onrender.com
 
 A modular full-stack web application built with Flask that allows users to securely manage and analyze personal expenses.
 
