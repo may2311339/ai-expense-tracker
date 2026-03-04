@@ -3,6 +3,7 @@ from app.extensions import db
 from datetime import datetime
 
 def create_expense(user_id, form):
+
     expense = Expense(
         description=form["description"],
         amount=float(form["amount"]),
@@ -16,5 +17,6 @@ def create_expense(user_id, form):
 
 
 def delete_expense(expense):
+
     db.session.delete(expense)
     db.session.commit()

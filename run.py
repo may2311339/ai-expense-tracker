@@ -3,6 +3,7 @@ from app.extensions import db
 
 app = create_app()
 
+# Ensure tables exist
 with app.app_context():
     db.create_all()
 
