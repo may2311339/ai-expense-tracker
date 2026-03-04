@@ -7,6 +7,7 @@
 
 Live Demo: https://ai-expense-tracker-whdx.onrender.com
 
+
 A modular full-stack web application built with Flask that allows users to securely manage and analyze personal expenses.
 
 The application follows clean backend architecture principles using service-layer separation and the Flask application factory pattern.
