@@ -1,4 +1,12 @@
-# 🚀 AI Expense Tracker
+🚀 AI Expense Tracker
+
+"Python" (https://img.shields.io/badge/Python-3.11-blue)
+"Flask" (https://img.shields.io/badge/Flask-Web%20Framework-black)
+"SQLAlchemy" (https://img.shields.io/badge/SQLAlchemy-ORM-red)
+"Render" (https://img.shields.io/badge/Deployment-Render-purple)
+
+Live Demo:
+https://ai-expense-tracker-whdx.onrender.com
 
 A modular full-stack web application built with Flask that allows users to securely manage and analyze personal expenses.
 
@@ -6,107 +14,116 @@ The application follows clean backend architecture principles using service-laye
 
 ---
 
-## ✨ Features
+✨ Features
 
 - 🔐 User Authentication (Register / Login / Logout)
-- 🔑 Secure password hashing (Werkzeug)
-- ➕ Add, ✏ Edit, ❌ Delete Expenses
-- 📊 Category-wise expense tracking
-- 📅 Monthly expense summary
+- 🔑 Secure password hashing using Werkzeug
+- ➕ Add expenses
+- ✏️ Edit expenses
+- ❌ Delete expenses
+- 📂 Category-wise expense tracking
+- 📊 Monthly expense summary
 - 💰 Budget management
-- 📈 Financial score calculation
+- 🧠 Financial score calculation
 - 🥧 Pie chart analytics (Chart.js)
-- 📊 Daily expense bar chart
-- 🌙 Dark/Light theme toggle (Tailwind CSS)
-- 🏗 Modular backend structure
+- 📈 Daily expense bar chart
 
 ---
 
-## 🏗 Architecture
+🛠 Tech Stack
 
-This project follows:
+Backend
 
-- Flask Application Factory Pattern
-- Service Layer Pattern
-- Separation of Concerns
-- ORM-based database modeling (SQLAlchemy)
+- Python
+- Flask
+- SQLAlchemy
+- Gunicorn
 
-### Project Structure
+Frontend
 
-AI-Expense-Tracker/
+- HTML
+- Tailwind CSS
+- Chart.js
+
+Deployment
+
+- Render
+- GitHub
+
+---
+
+📂 Project Structure
+
+AI Expense Tracker
 │
-├── app/
-│   ├── __init__.py
-│   ├── models.py
+├── app
 │   ├── routes.py
+│   ├── models.py
 │   ├── extensions.py
 │   ├── services/
-│   │   └── expense_service.py
 │   └── templates/
 │
-├── config.py
+├── instance
+│   └── expenses.db
+│
 ├── run.py
+├── config.py
 ├── requirements.txt
 └── README.md
 
 ---
 
-## 🛠 Tech Stack
+⚙️ Installation
 
-### Backend
-- Python
-- Flask
-- SQLAlchemy
-- SQLite
-- Gunicorn (for production)
+Clone the repository
 
-### Frontend
-- HTML
-- Tailwind CSS (CDN)
-- Jinja2 Templates
-- Chart.js
+git clone https://github.com/may2311339/ai-expense-tracker.git
 
-### Tools
-- Git
-- GitHub
+Navigate to the project directory
 
----
+cd ai-expense-tracker
 
-## ⚙️ Local Setup
+Create virtual environment
 
-1. Clone repository:
-   git clone https://github.com/YOUR_USERNAME/AI-Expense-Tracker.git
+python -m venv venv
 
-2. Navigate into project:
-   cd AI-Expense-Tracker
+Activate virtual environment (Windows)
 
-3. Create virtual environment:
-   python -m venv venv
-   venv\Scripts\activate  (Windows)
+venv\Scripts\activate
 
-4. Install dependencies:
-   pip install -r requirements.txt
+Install dependencies
 
-5. Run the app:
-   python run.py
+pip install -r requirements.txt
 
-6. Open in browser:
-   http://127.0.0.1:5000
+Run the application
+
+python run.py
+
+Open in browser
+
+http://127.0.0.1:5000
 
 ---
 
-## 🚀 Future Improvements
+📸 Screenshots
 
-- REST API version
-- JWT authentication
-- PostgreSQL support
-- Docker containerization
-- Cloud deployment
-- Advanced financial analytics
+(Add screenshots of dashboard and analytics here)
+
+Dashboard
+
+"Dashboard" (screenshots/dashboard.png)
+
+Analytics
+
+"Analytics" (screenshots/analytics.png)
 
 ---
 
-## 👨‍💻 Author
+👨‍💻 Author
 
-Mayank Sharma  
-B.Tech Computer Science (2027)
+Mayank Sharma
+BTech Computer Science (2027)
+
+---
+
+⭐ If you like this project, consider giving it a star on GitHub.
